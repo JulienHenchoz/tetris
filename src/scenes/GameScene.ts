@@ -99,32 +99,32 @@ export class GameScene extends Container {
         })
         addEventListener('keyup', (e) => this.handleKeyUp(e))
 
-        addEventListener('mousedown', (e) => this.handleMouseDown(e))
-        addEventListener('mouseup', (e) => this.handleMouseUp(e))
+        addEventListener('touchstart', (e) => this.handleMouseDown(e))
+        addEventListener('touchend', (e) => this.handleMouseUp(e))
     }
 
-    handleMouseDown(e: MouseEvent) {
+    handleMouseDown(e: TouchEvent) {
+        console.log(e)
         if (this.state !== STATE_RUNNING) {
             this.setState(STATE_RUNNING)
             return
         }
-        if (e.clientX < this.app.screen.width / 3) {
+        if (e.touches[0].clientX < this.app.screen.width / 3) {
             if (!this.keyDown.includes('a')) {
                 this.keyDown.push('a')
             }
         }
-        else if (e.clientX > this.app.screen.width / 3 * 2) {
+        else if (e.touches[0].clientX > this.app.screen.width / 3 * 2) {
             if (!this.keyDown.includes('d')) {
                 this.keyDown.push('d')
             }
         }
-        else if (e.clientX > this.app.screen.width / 3 && e.clientX < this.app.screen.width / 3 * 2) {
+        else if (e.touches[0].clientX > this.app.screen.width / 3 && e.touches[0].clientX < this.app.screen.width / 3 * 2) {
             this.handleKeyUp(new KeyboardEvent('keyup', {key: 'w'}))
         }
     }
 
-    handleMouseUp(e: MouseEvent) {
-        console.log(e.clientX)
+    handleMouseUp(e: TouchEvent) {
         this.keyDown = []
         console.log(this.keyDown)
     }
