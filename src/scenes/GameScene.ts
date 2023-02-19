@@ -32,6 +32,8 @@ export class GameScene extends Container {
     nextShape?: Shape | null
     stashShape?: Shape | null
     canRotate: boolean = true
+    touchStart: TouchEvent | null = null
+    touchEnd: TouchEvent | null = null
 
     menuScene?: MenuScene
     scoreScene?: ScoreScene
@@ -104,7 +106,7 @@ export class GameScene extends Container {
     }
 
     handleMouseDown(e: TouchEvent) {
-        console.log(e)
+        this.touchStart = e
         if (this.state !== STATE_RUNNING) {
             this.setState(STATE_RUNNING)
             return
@@ -119,14 +121,26 @@ export class GameScene extends Container {
                 this.keyDown.push('d')
             }
         }
-        else if (e.touches[0].clientX > this.app.screen.width / 3 && e.touches[0].clientX < this.app.screen.width / 3 * 2) {
-            this.handleKeyUp(new KeyboardEvent('keyup', {key: 'w'}))
-        }
     }
 
     handleMouseUp(e: TouchEvent) {
         this.keyDown = []
-        console.log(this.keyDown)
+        console.log(e)
+        console.log(this.touchStart)
+        const offsetY = e.changedTouches[0].clientY - this.touchStart!.changedTouches[0].clientY
+        if (offsetY < -10) {
+            this.handleKeyUp(new KeyboardEvent('keyup', {key: 'w'}))
+            console.log('rotate')
+        }
+        else if (offsetY > 10) {
+            console.log('drop down')
+            if (!this.keyDown.includes('s')) {
+                this.keyDown.push('s')
+                setTimeout(() => {
+                    this.keyDown = this.keyDown.filter(k => k !== 's')
+                }, 100)
+            }
+        }
     }
 
     setState(state: string) {
