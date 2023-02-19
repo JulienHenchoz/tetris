@@ -97,21 +97,32 @@ export class GameScene extends Container {
                 this.keyDown.push(e.key)
             }
         })
-        addEventListener('keyup', (e) => {
-            this.keyDown = this.keyDown.filter(key => key !== e.key)
-            this.canRotate = true
+        addEventListener('keyup', (e) => this.handleKeyUp(e))
 
-            if (e.key === 'Enter') {
-                if (this.state === STATE_PAUSED) {
-                    this.setState(STATE_RUNNING)
-                } else if (this.state === STATE_RUNNING) {
-                    this.setState(STATE_PAUSED)
-                }
+        addEventListener('mousedown', (e) => this.handleMouseDown(e))
+        addEventListener('mouseup', (e) => this.handleMouseUp(e))
+    }
+
+    handleMouseDown(e: MouseEvent) {
+        if (e.clientX < this.app.screen.width / 3) {
+            if (!this.keyDown.includes('a')) {
+                this.keyDown.push('a')
             }
-            if (e.key === 'f') {
-                this.stash()
+        }
+        else if (e.clientX > this.app.screen.width / 3 * 2) {
+            if (!this.keyDown.includes('d')) {
+                this.keyDown.push('d')
             }
-        })
+        }
+        else if (e.clientX > this.app.screen.width / 3 && e.clientX < this.app.screen.width / 3 * 2) {
+            this.handleKeyUp(new KeyboardEvent('keyup', {key: 'w'}))
+        }
+    }
+
+    handleMouseUp(e: MouseEvent) {
+        console.log(e.clientX)
+        this.keyDown = []
+        console.log(this.keyDown)
     }
 
     setState(state: string) {
@@ -221,7 +232,7 @@ export class GameScene extends Container {
         }
     }
 
-    handleInput() {
+    handleKeyDown() {
         this.moveTimer++
         if (this.moveTimer > this.moveSpeed) {
             this.moveTimer = 0
@@ -241,18 +252,34 @@ export class GameScene extends Container {
                         case 's':
                             this.currentShape?.moveDown()
                             break
-                        case 'w':
-                            if (this.canRotate) {
-                                this.currentShape?.rotate()
-                                this.settleTimer = 0
-                                this.canRotate = false
-                            }
-                            break
                         case ' ':
                             this.currentShape?.dropDown()
                     }
                 }
             }
+        }
+    }
+
+    handleKeyUp(e: KeyboardEvent) {
+        this.keyDown = this.keyDown.filter(key => key !== e.key)
+        this.canRotate = true
+
+        if (e.key === 'Enter') {
+            if (this.state === STATE_PAUSED) {
+                this.setState(STATE_RUNNING)
+            } else if (this.state === STATE_RUNNING) {
+                this.setState(STATE_PAUSED)
+            }
+        }
+        if (e.key === 'w') {
+            if (this.canRotate) {
+                this.currentShape?.rotate()
+                this.settleTimer = 0
+                this.canRotate = false
+            }
+        }
+        if (e.key === 'f') {
+            this.stash()
         }
     }
 
@@ -323,7 +350,7 @@ export class GameScene extends Container {
 
             this.shapeFall()
         }
-        this.handleInput()
+        this.handleKeyDown()
     }
 
     increaseScore(doneLines: number) {
