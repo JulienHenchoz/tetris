@@ -104,6 +104,10 @@ export class GameScene extends Container {
     }
 
     handleMouseDown(e: MouseEvent) {
+        if (this.state !== STATE_RUNNING) {
+            this.setState(STATE_RUNNING)
+            return
+        }
         if (e.clientX < this.app.screen.width / 3) {
             if (!this.keyDown.includes('a')) {
                 this.keyDown.push('a')
