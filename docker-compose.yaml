@@ -1,0 +1,21 @@
+---
+version: '3'
+services:
+  tetris:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nginx:latest
+    container_name: tetris
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./dist/:/usr/share/nginx/html
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  node_modules:
