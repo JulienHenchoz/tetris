@@ -128,11 +128,11 @@ export class GameScene extends Container {
         console.log(e)
         console.log(this.touchStart)
         const offsetY = e.changedTouches[0].clientY - this.touchStart!.changedTouches[0].clientY
-        if (offsetY < -10) {
+        if (offsetY < -50) {
             this.handleKeyUp(new KeyboardEvent('keyup', {key: 'w'}))
             console.log('rotate')
         }
-        else if (offsetY > 10) {
+        else if (offsetY > 50) {
             console.log('drop down')
             if (!this.keyDown.includes('s')) {
                 this.keyDown.push('s')
